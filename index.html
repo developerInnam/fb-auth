@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Facebook Login JavaScript Example</title>
+  <meta charset="UTF-8">
+</head>
+<body>
+
+<script>
+  function statusChangeCallback(response) {
+    console.log('statusChangeCallback');
+    console.log(response);
+    if (response.status === 'connected') {
+      testAPI();
+    } else {
+      document.getElementById('status').innerHTML = 'Please log into this webpage.';
+    }
+  }
+
+  function checkLoginState() {
+    FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+    });
+  }
+
+  function logoutFacebook() {
+    FB.logout(function(response) {
+      console.log('User logged out:', response);
+      document.getElementById('status').innerHTML = 'You have been logged out.';
+    });
+  }
+
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '1888612998561682',
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v22.0'
+    });
+
+    FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+    });
+  };
+
+  function testAPI() {
+    console.log('Fetching user info...');
+    FB.api('/me', function(response) {
+      console.log('Logged in as: ' + response.name);
+      document.getElementById('status').innerHTML =
+        'Thanks for logging in, ' + response.name + '! <br><br>' +
+        '<button onclick="logoutFacebook()">Logout from Facebook</button>';
+
+      // Optional: Get user's pages
+      FB.api('/me/accounts', function(pageResponse) {
+        console.log('Pages:', pageResponse);
+      });
+    });
+  }
+</script>
+
+<!-- Facebook Login Button with Extended Permissions -->
+<fb:login-button
+  scope="public_profile,email,pages_show_list,pages_read_engagement"
+  onlogin="checkLoginState();">
+</fb:login-button>
+
+<div id="status"></div>
+
+<!-- Load the Facebook SDK -->
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+
+</body>
+</html>
