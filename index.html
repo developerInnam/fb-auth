@@ -6,7 +6,43 @@
 </head>
 <body>
 
+  <script async defer crossorigin="anonymous" 
+  src="https://connect.facebook.net/en_US/sdk.js"></script>
+
 <script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '716401497551487',
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v22.0'
+    });
+  };
+
+  function loginWithFacebook() {
+    FB.login(function(response) {
+      if (response.authResponse) {
+        FB.api('/me?fields=name,email', function(userInfo) {
+          console.log('User Info:', userInfo);
+        });
+
+        // Requesting additional page and ads permissions
+        FB.api('/me/accounts', function(pages) {
+          console.log('Pages:', pages);
+        });
+      } else {
+        console.log('User cancelled login or did not fully authorize.');
+      }
+    }, {
+      scope: 'public_profile,email,pages_show_list,pages_read_engagement,ads_management,business_management'
+    });
+  }
+</script>
+
+<button onclick="loginWithFacebook()">Login with Facebook</button>
+
+
+<!-- <script>
   function statusChangeCallback(response) {
     console.log('statusChangeCallback');
     console.log(response);
@@ -51,24 +87,17 @@
         'Thanks for logging in, ' + response.name + '! <br><br>' +
         '<button onclick="logoutFacebook()">Logout from Facebook</button>';
 
-      // Optional: Get user's pages
       FB.api('/me/accounts', function(pageResponse) {
         console.log('Pages:', pageResponse);
       });
     });
   }
-</script>
-
-<!-- Facebook Login Button with Extended Permissions -->
-<fb:login-button
-  scope="public_profile,email"
-  onlogin="checkLoginState();">
-</fb:login-button>
+</script> -->
 
 <div id="status"></div>
 
 <!-- Load the Facebook SDK -->
-<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+<!-- <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script> -->
 
 </body>
 </html>
