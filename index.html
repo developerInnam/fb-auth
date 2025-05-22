@@ -12,8 +12,10 @@
     console.log(response);
     if (response.status === 'connected') {
       testAPI();
+      document.getElementById('logoutBtn').style.display = 'inline-block';
     } else {
       document.getElementById('status').innerHTML = 'Please log into this webpage.';
+      document.getElementById('logoutBtn').style.display = 'none';
     }
   }
 
@@ -27,6 +29,7 @@
     FB.logout(function(response) {
       console.log('User logged out:', response);
       document.getElementById('status').innerHTML = 'You have been logged out.';
+      document.getElementById('logoutBtn').style.display = 'none';
     });
   }
 
@@ -48,26 +51,26 @@
     FB.api('/me', function(response) {
       console.log('Logged in as: ' + response.name);
       document.getElementById('status').innerHTML =
-        'Thanks for logging in, ' + response.name + '! <br><br>' +
-        '<button onclick="logoutFacebook()">Logout from Facebook</button>';
-
-      // Optional: Get user's pages
-      FB.api('/me/accounts', function(pageResponse) {
-        console.log('Pages:', pageResponse);
-      });
+        'Thanks for logging in, ' + response.name + '!';
     });
   }
 </script>
 
+<!-- Facebook Login Button -->
 <fb:login-button
   scope="public_profile,email,pages_show_list,pages_read_engagement"
   onlogin="checkLoginState();">
 </fb:login-button>
 
+<!-- Facebook Logout Button -->
+<button id="logoutBtn" onclick="logoutFacebook()" style="display:none; margin-top: 10px;">
+  Logout from Facebook
+</button>
 
-<div id="status"></div>
+<!-- Status Display -->
+<div id="status" style="margin-top: 10px;"></div>
 
-<!-- Load the Facebook SDK -->
+<!-- Load Facebook SDK -->
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
 
 </body>
