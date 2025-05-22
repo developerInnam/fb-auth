@@ -17,12 +17,12 @@
 
   <script>
     window.fbAsyncInit = function() {
-      FB.init({
-        appId: '716401497551487', // ⚠️ Replace this with your actual App ID
-        cookie: true,
-        xfbml: false,
-        version: 'v22.0'
-      });
+FB.init({
+  appId: '716401497551487',
+  cookie: true,
+  xfbml: true,
+  version: 'v19.0' // or latest
+});
 
       FB.getLoginStatus(function(response) {
         statusChangeCallback(response);
