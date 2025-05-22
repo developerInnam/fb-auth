@@ -1,71 +1,74 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Facebook Login Example</title>
+  <title>Facebook Login JavaScript Example</title>
+  <meta charset="UTF-8">
 </head>
 <body>
 
-  <h2>Facebook Login Demo</h2>
-  <div id="status">Not logged in</div>
-  <button onclick="loginWithFacebook()">Login with Facebook</button>
-  <button onclick="logoutFacebook()">Logout</button>
-
-  <!-- Facebook SDK -->
-  <script async defer crossorigin="anonymous"
-    src="https://connect.facebook.net/en_US/sdk.js"></script>
-
-  <script>
-    window.fbAsyncInit = function() {
-FB.init({
-  appId: '716401497551487',
-  cookie: true,
-  xfbml: true,
-  version: 'v19.0' // or latest
-});
-
-      FB.getLoginStatus(function(response) {
-        statusChangeCallback(response);
-      });
-    };
-
-    function statusChangeCallback(response) {
-      console.log('Facebook login status:', response);
-      if (response.status === 'connected') {
-        fetchUserInfo();
-      } else {
-        document.getElementById('status').innerHTML = 'Please log in using Facebook.';
-      }
+<script>
+  function statusChangeCallback(response) {
+    console.log('statusChangeCallback');
+    console.log(response);
+    if (response.status === 'connected') {
+      testAPI();
+    } else {
+      document.getElementById('status').innerHTML = 'Please log into this webpage.';
     }
+  }
 
-    function loginWithFacebook() {
-      FB.login(function(response) {
-        if (response.authResponse) {
-          fetchUserInfo();
-        } else {
-          console.log('User cancelled login or did not fully authorize.');
-        }
-      }, {
-        scope: 'public_profile,email' // ✅ Add others like 'pages_read_engagement' only after App Review
-      });
-    }
+  function checkLoginState() {
+    FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+    });
+  }
 
-    function logoutFacebook() {
-      FB.logout(function(response) {
-        console.log('User logged out:', response);
-        document.getElementById('status').innerHTML = 'You have been logged out.';
-      });
-    }
+  function logoutFacebook() {
+    FB.logout(function(response) {
+      console.log('User logged out:', response);
+      document.getElementById('status').innerHTML = 'You have been logged out.';
+    });
+  }
 
-    function fetchUserInfo() {
-      FB.api('/me', { fields: 'name,email' }, function(response) {
-        console.log('User info:', response);
-        document.getElementById('status').innerHTML = `
-          Logged in as: ${response.name} (${response.email})
-        `;
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '716401497551487',
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v22.0'
+    });
+
+    FB.getLoginStatus(function(response) {
+      statusChangeCallback(response);
+    });
+  };
+
+  function testAPI() {
+    console.log('Fetching user info...');
+    FB.api('/me', function(response) {
+      console.log('Logged in as: ' + response.name);
+      document.getElementById('status').innerHTML =
+        'Thanks for logging in, ' + response.name + '! <br><br>' +
+        '<button onclick="logoutFacebook()">Logout from Facebook</button>';
+
+      // Optional: Get user's pages
+      FB.api('/me/accounts', function(pageResponse) {
+        console.log('Pages:', pageResponse);
       });
-    }
-  </script>
+    });
+  }
+</script>
+
+<fb:login-button
+  scope="public_profile,email,pages_show_list,pages_read_engagement"
+  onlogin="checkLoginState();">
+</fb:login-button>
+
+
+<div id="status"></div>
+
+<!-- Load the Facebook SDK -->
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
 
 </body>
 </html>
